@@ -1,0 +1,40 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  name: String!
+  role: Role!
+}
+
+enum Role {
+  user
+  admin
+  superadmin
+}
+
+type AuthPayload {
+  user: User!
+  token: String!
+}
+
+type Query {
+  user: User!
+}
+
+type Mutation {
+  register(input: RegisterUserInput!): AuthPayload!
+  login(input: LoginUserInput!): AuthPayload!
+}
+
+input RegisterUserInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}

@@ -1,0 +1,76 @@
+version: "3.6"
+services:
+    app:
+        build:
+            context: .
+            target: development
+        depends_on:
+            - db
+
+        volumes:
+            - ./src:/app/src
+            - ./prisma:/app/prisma
+        ports:
+            - 3000:3000
+        environment:
+            - DATABASE_URL=postgres://postgres:postgres@db:5432/dev
+            - NODE_ENV=development
+            - SECRET=secret
+            - S3_URI=http://minio:9000
+            - S3_ACCESS_KEY=minio-username
+            - S3_SECRET_KEY=minio-password
+    db:
+        image: postgres:14
+        ports:
+            - 5432:5432
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_DB: dev
+    migratedb:
+        image: app:latest
+        command:
+            [
+                "./wait-for-it/wait-for-it.sh",
+                "db:5432",
+                "--",
+                "npx",
+                "prisma",
+                "migrate",
+                "deploy",
+            ]
+        environment:
+            - DATABASE_URL=postgres://postgres:postgres@db:5432/dev
+        build:
+            context: .
+            target: development
+    minio:
+        image: minio/minio
+        ports:
+            - "9000:9000"
+            - "9001:9001"
+        environment:
+            - "MINIO_ROOT_USER=minio-username"
+            - "MINIO_ROOT_PASSWORD=minio-password"
+
+        command: server /export --console-address ":9001"
+    createbuckets:
+        image: minio/mc
+        links:
+            - "minio"
+        depends_on:
+            - minio
+        entrypoint: >
+            /bin/sh -c "
+            sleep 5;
+            /bin/mc config host add local http://minio:9000 minio-username minio-password;
+            /bin/mc mb --ignore-existing local/avatars;
+            /bin/mc policy set download local/avatars;
+            /bin/mc mb --ignore-existing local/gallery;
+            /bin/mc policy set download local/gallery;
+            /bin/mc mb --ignore-existing local/backdrop;
+            /bin/mc policy set download local/backdrop;
+            /bin/mc mb --ignore-existing local/poster;
+            /bin/mc policy set download local/poster;
+            exit 0;"
