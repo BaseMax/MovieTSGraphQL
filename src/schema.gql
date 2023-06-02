@@ -26,6 +26,7 @@ type Query {
 type Mutation {
   register(input: RegisterUserInput!): AuthPayload!
   login(input: LoginUserInput!): AuthPayload!
+  changeRole(userId: String!, role: Role!): User!
 }
 
 input RegisterUserInput {
