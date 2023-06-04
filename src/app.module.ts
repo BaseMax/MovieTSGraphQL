@@ -10,6 +10,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './modules/upload/upload.module';
+import { GenresModule } from './modules/genres/genres.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UploadModule } from './modules/upload/upload.module';
     PrismaModule,
     AuthModule,
     UploadModule,
+    GenresModule,
   ],
   controllers: [AppController],
   providers: [AppService],

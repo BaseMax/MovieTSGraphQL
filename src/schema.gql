@@ -19,14 +19,23 @@ type AuthPayload {
   token: String!
 }
 
+type Genre {
+  id: ID!
+  name: String!
+}
+
 type Query {
   user: User!
+  genres: [Genre!]!
+  genre(id: String!): Genre
 }
 
 type Mutation {
   register(input: RegisterUserInput!): AuthPayload!
   login(input: LoginUserInput!): AuthPayload!
   changeRole(userId: String!, role: Role!): User!
+  createGenre(input: CreateGenreInput!): Genre!
+  updateGenre(input: UpdateGenreInput!): Genre!
 }
 
 input RegisterUserInput {
@@ -38,4 +47,13 @@ input RegisterUserInput {
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input CreateGenreInput {
+  name: String!
+}
+
+input UpdateGenreInput {
+  name: String!
+  id: ID!
 }

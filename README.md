@@ -4,18 +4,15 @@ This is a movie project that aims to create a GraphQL web service with various f
 
 ## Features
 - Add a new movie
-- Add a new category
+- Add a new genre
 - Add an actor
-- Add a director
 - List all actors
-- List all directors
 - Search actors
 - Get a list of all movies with pagination
 - Get a list of all movies in one or multiple genres (e.g., comedy and war)
 - Edit a movie
 - Delete a movie
 - Delete an actor
-- Delete a director
 - Get details of a movie
 - Get comments of a movie
 - Confirm a comment
