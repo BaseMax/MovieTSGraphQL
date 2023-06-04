@@ -66,11 +66,11 @@ services:
             sleep 5;
             /bin/mc config host add local http://minio:9000 minio-username minio-password;
             /bin/mc mb --ignore-existing local/avatars;
-            /bin/mc policy set download local/avatars;
+            /bin/mc anonymous set download local/avatars;
             /bin/mc mb --ignore-existing local/gallery;
-            /bin/mc policy set download local/gallery;
+            /bin/mc anonymous set download local/gallery;
             /bin/mc mb --ignore-existing local/backdrop;
-            /bin/mc policy set download local/backdrop;
+            /bin/mc anonymous set download local/backdrop;
             /bin/mc mb --ignore-existing local/poster;
-            /bin/mc policy set download local/poster;
+            /bin/mc anonymous set download local/poster;
             exit 0;"
