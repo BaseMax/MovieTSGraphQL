@@ -24,10 +24,36 @@ type Genre {
   name: String!
 }
 
+type Artist {
+  id: ID!
+  name: String!
+  bio: String
+  dateOfBirth: DateTime
+  avatar: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PaginatedArtist {
+  total: Int!
+  artists: [Artist!]!
+}
+
 type Query {
   user: User!
   genres: [Genre!]!
   genre(id: String!): Genre
+  artist(id: String!): Artist
+  searchArtists(input: SearchArtistInput!): PaginatedArtist!
+}
+
+input SearchArtistInput {
+  limit: Int! = 16
+  skip: Int! = 0
+  text: String
 }
 
 type Mutation {
@@ -36,6 +62,9 @@ type Mutation {
   changeRole(userId: String!, role: Role!): User!
   createGenre(input: CreateGenreInput!): Genre!
   updateGenre(input: UpdateGenreInput!): Genre!
+  deleteArtist(id: String!): Boolean!
+  createArtist(input: CreateArtistInput!): Artist!
+  updateArtist(input: UpdateArtistInput!): Artist!
 }
 
 input RegisterUserInput {
@@ -56,4 +85,19 @@ input CreateGenreInput {
 input UpdateGenreInput {
   name: String!
   id: ID!
+}
+
+input CreateArtistInput {
+  name: String!
+  bio: String
+  dateOfBirth: DateTime
+  avatar: String
+}
+
+input UpdateArtistInput {
+  name: String
+  bio: String
+  dateOfBirth: DateTime
+  avatar: String
+  id: String!
 }

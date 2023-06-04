@@ -1,5 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectS3, S3 } from 'nestjs-s3';
+import { NotFound } from '@aws-sdk/client-s3';
 import * as sharp from 'sharp';
 import * as cuid from 'cuid';
 import { sizes } from './config';
@@ -49,6 +50,33 @@ export class UploadService {
     });
 
     return `/${bucket}/${key}`;
+  }
+  public async checkWithBucketOrFail(path: string, expectedBucket: string) {
+    const { bucket, exists } = await this.check(path);
+
+    if (!exists || bucket !== expectedBucket) {
+      throw new NotFoundException(`invalid path :${path}`)
+    }
+  }
+  public async check(path: string) {
+    const [_, bucket, ...rest] = path.split('/');
+    const name = rest.join('/');
+
+    let exists = true;
+    try {
+      console.log(bucket, name);
+      await this.s3.headObject({
+        Bucket: bucket,
+        Key: name
+      });
+    } catch (e) {
+      console.log(e)
+      if (e instanceof NotFound)
+        exists = false;
+      else
+        throw e;
+    }
+    return { bucket, exists }
   }
 
   private getKey(name: string) {

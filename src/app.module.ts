@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './modules/upload/upload.module';
 import { GenresModule } from './modules/genres/genres.module';
+import { ArtistsModule } from './modules/artists/artists.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GenresModule } from './modules/genres/genres.module';
     AuthModule,
     UploadModule,
     GenresModule,
+    ArtistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

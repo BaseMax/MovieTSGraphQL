@@ -14,12 +14,13 @@ import { ConfigService } from '@nestjs/config';
           },
           endpoint: c.getOrThrow("S3_URI"),
           forcePathStyle: true,
-          region:"eu-west-1"
+          region: "eu-west-1"
         },
       }),
       inject: [ConfigService]
     }),],
   providers: [UploadService],
+  exports: [UploadService],
   controllers: [UploadController]
 })
 export class UploadModule { }
