@@ -17,20 +17,21 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
     const c = ctx.getContext();
-    if (this.isOptional(ctx) && !c.req.headers.authorization) {
-      return true;
-    }
-    const token = c.req.headers?.authorization?.split(' ')[1];
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-    try {
-      c.req.user = this.jwtService.verify(token);
-    } catch {
-      throw new UnauthorizedException();
-    }
-    if (!this.isGteRole(c.req.user.role, this.getMinRole(ctx))) {
-      throw new ForbiddenException("permission denied");
+    if (c.req.headers.authorization) {
+      const token = c.req.headers?.authorization?.split(' ')[1];
+      if (!token) {
+        throw new UnauthorizedException("invalid token");
+      }
+      try {
+        c.req.user = this.jwtService.verify(token);
+      } catch {
+        throw new UnauthorizedException("invalid token");
+      }
+      if (!this.isGteRole(c.req.user.role, this.getMinRole(ctx))) {
+        throw new ForbiddenException("permission denied");
+      }
+    } else if (this.isPrivate(ctx)) {
+      throw new UnauthorizedException("authentication required");
     }
 
     return true;
@@ -49,8 +50,8 @@ export class AuthGuard implements CanActivate {
       ctx.getClass(),
     ]) || Role.user;
   }
-  isOptional(ctx: ExecutionContext) {
-    return this.reflector.getAllAndOverride('IS_OPTIONAL_AUTH', [
+  isPrivate(ctx: ExecutionContext) {
+    return this.reflector.getAllAndOverride('IS_PRIVATE', [
       ctx.getHandler(),
       ctx.getClass(),
     ]);

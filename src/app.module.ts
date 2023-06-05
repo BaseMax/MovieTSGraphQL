@@ -13,6 +13,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { GenresModule } from './modules/genres/genres.module';
 import { ArtistsModule } from './modules/artists/artists.module';
 import { MoviesModule } from './modules/movies/movies.module';
+import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { MoviesModule } from './modules/movies/movies.module';
     GenresModule,
     ArtistsModule,
     MoviesModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

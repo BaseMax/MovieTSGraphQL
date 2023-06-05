@@ -1,7 +1,6 @@
-import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { AuthGuard } from '../auth/auth.guard';
 import { MinRole } from '../auth/min-role.decorator';
+import { Private } from '../auth/optional.decorator';
 import { Role } from '../users/user.model';
 import { Artist } from './artist.model';
 import { ArtistsService } from './artists.service';
@@ -16,21 +15,21 @@ export class ArtistsResolver {
   constructor(private service: ArtistsService) { }
 
   @Mutation(() => Boolean)
-  @UseGuards(AuthGuard)
+  @Private()
   @MinRole(Role.admin)
   deleteArtist(@Args("id") id: string) {
     return this.service.delete(id);
   }
 
   @Mutation(() => Artist)
-  @UseGuards(AuthGuard)
+  @Private()
   @MinRole(Role.admin)
   createArtist(@Args("input") input: CreateArtistInput) {
     return this.service.create(input);
   }
 
   @Mutation(() => Artist)
-  @UseGuards(AuthGuard)
+  @Private()
   @MinRole(Role.admin)
   updateArtist(@Args("input") input: UpdateArtistInput) {
     return this.service.update(input);

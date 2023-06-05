@@ -6,6 +6,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 import { AuthGuard } from './auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Global()
 @Module({
@@ -21,7 +22,10 @@ import { AuthGuard } from './auth.guard';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, AuthResolver, AuthGuard],
+  providers: [AuthService, AuthResolver, AuthGuard, {
+    provide: APP_GUARD,
+    useClass: AuthGuard
+  }],
   exports: [
     UsersModule,
     AuthGuard,

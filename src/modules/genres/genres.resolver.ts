@@ -1,7 +1,6 @@
-import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { AuthGuard } from '../auth/auth.guard';
 import { MinRole } from '../auth/min-role.decorator';
+import { Private } from '../auth/optional.decorator';
 import { Role } from '../users/user.model';
 import { CreateGenreInput } from './dto/create-genre.input';
 import { UpdateGenreInput } from './dto/update-genre.input';
@@ -22,14 +21,14 @@ export class GenresResolver {
   }
 
   @Mutation(() => Genre)
-  @UseGuards(AuthGuard)
+  @Private()
   @MinRole(Role.admin)
   public createGenre(@Args("input") input: CreateGenreInput) {
     return this.service.create(input);
   }
 
   @Mutation(() => Genre)
-  @UseGuards(AuthGuard)
+  @Private()
   @MinRole(Role.admin)
   public updateGenre(@Args("input") input: UpdateGenreInput) {
     return this.service.update(input);

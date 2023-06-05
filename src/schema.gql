@@ -25,6 +25,20 @@ type Genre {
   movieCount: Float!
 }
 
+type Comment {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+  isApproved: Boolean!
+  user: User!
+  movie: Movie!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Movie {
   id: ID!
   plot: String
@@ -40,12 +54,13 @@ type Movie {
   artists: [MovieArtist!]!
   downloadableAssets: [DownloadableAsset!]!
   languages: [MovieLanguage!]!
+  comments(pagination: CursorBasedPagination!): [Comment!]!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+input CursorBasedPagination {
+  limit: Int! = 16
+  cursor: String
+}
 
 type MovieArtist {
   artist: Artist!
@@ -108,6 +123,7 @@ type Query {
   searchArtists(input: SearchArtistInput!): PaginatedArtist!
   movie(id: String!): Movie
   searchMovie(input: SearchMovieInput!): PaginatedMovies!
+  unapprovedComments(pagination: CursorBasedPagination!): [Comment!]!
 }
 
 input SearchArtistInput {
@@ -137,6 +153,10 @@ type Mutation {
   createMovie(input: CreateMovieInput!): Movie!
   updateMovie(input: UpdateMovieInput!): Movie!
   deleteMovie(id: String!): Boolean!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(id: String!): Boolean!
+  approveComment(id: String!): Comment!
 }
 
 input RegisterUserInput {
@@ -223,4 +243,14 @@ input UpdateMovieInput {
   downloadableAssets: [CreateDownloadableAssetInput!]
   languages: [CreateMovieLanguageInput!]
   id: ID!
+}
+
+input CreateCommentInput {
+  text: String!
+  movieId: String!
+}
+
+input UpdateCommentInput {
+  text: String!
+  id: String!
 }

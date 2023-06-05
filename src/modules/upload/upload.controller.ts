@@ -1,9 +1,10 @@
 import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../auth/auth.guard';
 import { MinRole } from '../auth/min-role.decorator';
+import { Private } from '../auth/optional.decorator';
 import { Role } from '../users/user.model';
 import { UploadService } from './upload.service';
-@UseGuards(AuthGuard)
+
+@Private()
 @MinRole(Role.admin)
 @Controller('upload')
 export class UploadController {

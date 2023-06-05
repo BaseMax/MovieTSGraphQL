@@ -1,4 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
 
-export const IS_OPTIONAL_KEY = 'IS_OPTIONAL_AUTH';
-export const OptionalAuth = () => SetMetadata(IS_OPTIONAL_KEY, true);
+export const IS_PRIVATE = 'IS_PRIVATE';
+export const Private = () => SetMetadata(IS_PRIVATE, true);

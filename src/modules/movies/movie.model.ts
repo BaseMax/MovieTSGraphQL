@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID, Float, Int, registerEnumType } from '@nestjs/graphql';
 import { Artist } from '../artists/artist.model';
+import { Comment } from '../comments/comment.model';
 import { Genre } from '../genres/genre.model';
 
 @ObjectType()
@@ -45,6 +46,9 @@ export class Movie {
 
   @Field(() => [MovieLanguage])
   languages: MovieLanguage[];
+
+  @Field(() => [Comment])
+  comments: Comment[]
 }
 
 @ObjectType()

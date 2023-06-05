@@ -1,8 +1,6 @@
-import { UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Role, User } from '../users/user.model';
 import { UsersService } from '../users/users.service';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { AuthPayload } from './dto/auth-payload.model';
 import { LoginUserInput } from './dto/login.input';
@@ -10,6 +8,7 @@ import { RegisterUserInput } from './dto/register.input';
 import { UserAuthPayload } from './dto/user.data';
 import { AuthenticatedDec } from './authenticated-user.decorator';
 import { MinRole } from './min-role.decorator';
+import { Private } from './optional.decorator';
 
 @Resolver()
 export class AuthResolver {
@@ -40,13 +39,13 @@ export class AuthResolver {
     return { token, user };
   }
 
-  @UseGuards(AuthGuard)
+  @Private()
   @Query(() => User)
   async user(@AuthenticatedDec() userId: UserAuthPayload) {
     return this.usersService.getUserById(userId.id);
   }
 
-  @UseGuards(AuthGuard)
+  @Private()
   @MinRole(Role.superadmin)
   @Mutation(() => User)
   async changeRole(@Args("userId") userId: string, @Args("role", { type: () => Role }) role: Role) {
