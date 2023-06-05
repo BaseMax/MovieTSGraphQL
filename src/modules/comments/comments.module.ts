@@ -8,6 +8,6 @@ import { UsersModule } from '../users/users.module';
 @Module({
   providers: [CommentsService, CommentsResolver],
   imports: [PrismaModule, forwardRef(() => MoviesModule), UsersModule],
-  exports: [CommentsService]
+  exports: [CommentsService],
 })
-export class CommentsModule { }
+export class CommentsModule {}

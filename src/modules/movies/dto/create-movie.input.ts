@@ -1,6 +1,16 @@
 import { InputType, Field, Float, Int } from '@nestjs/graphql';
 import { AssetType, Contribution, LanguageRelation } from '../movie.model';
-import { IsIn, IsNotEmpty, IsOptional, IsString, IsUrl, Max, MaxLength, Min, ValidateNested } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  MaxLength,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 @InputType()
@@ -100,7 +110,19 @@ export class CreateDownloadableAssetInput {
   type: AssetType;
 }
 
-const VALID_LANGUAGE_TAGS = ['en', 'fa', 'fr', 'de', 'es', 'it', 'ja', 'ko', 'pt', 'ru', 'zh'];
+const VALID_LANGUAGE_TAGS = [
+  'en',
+  'fa',
+  'fr',
+  'de',
+  'es',
+  'it',
+  'ja',
+  'ko',
+  'pt',
+  'ru',
+  'zh',
+];
 
 @InputType()
 export class CreateMovieLanguageInput {
@@ -114,4 +136,3 @@ export class CreateMovieLanguageInput {
   @Field(() => LanguageRelation)
   for: LanguageRelation;
 }
-

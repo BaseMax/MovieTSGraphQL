@@ -17,46 +17,59 @@ const dbInclude = {
 export class MoviesService {
   async delete(id: string) {
     await this.getMovieByIdOrFail(id);
-    await this.prisma.movie.delete({ where: { id } })
+    await this.prisma.movie.delete({ where: { id } });
   }
   async getMovieById(id: string) {
-    return await this.prisma.movie.findUnique({ where: { id }, include: dbInclude })
+    return await this.prisma.movie.findUnique({
+      where: { id },
+      include: dbInclude,
+    });
   }
   async getMovieByIdOrFail(id: string) {
     const movie = await this.getMovieById(id);
     if (!movie) {
-      throw new NotFoundException(`movie not found. id: '${id}'`)
+      throw new NotFoundException(`movie not found. id: '${id}'`);
     }
-    return movie
+    return movie;
   }
   async search(input: SearchMovieInput) {
     const query = {
-      ...input.text ? {
-        OR: [
-          { plot: { search: input.text } },
-          { description: { search: input.text } },
-          { description: { search: input.text } }
-        ]
-      } : {},
-      ...(input.startDate || input.endDate) ? {
-        releaseDate: {
-          ...input.startDate ? {
-            gte: input.startDate
-          } : {},
-          ...input.endDate ? {
-            lte: input.endDate
-          } : {}
-        }
-      } : {},
-      ...input.genreIds ? {
-        AND: input.genreIds.map(g => ({
-          genres: {
-            some: {
-              id: g
-            }
+      ...(input.text
+        ? {
+            OR: [
+              { plot: { search: input.text } },
+              { description: { search: input.text } },
+              { description: { search: input.text } },
+            ],
           }
-        }))
-      } : {},
+        : {}),
+      ...(input.startDate || input.endDate
+        ? {
+            releaseDate: {
+              ...(input.startDate
+                ? {
+                    gte: input.startDate,
+                  }
+                : {}),
+              ...(input.endDate
+                ? {
+                    lte: input.endDate,
+                  }
+                : {}),
+            },
+          }
+        : {}),
+      ...(input.genreIds
+        ? {
+            AND: input.genreIds.map((g) => ({
+              genres: {
+                some: {
+                  id: g,
+                },
+              },
+            })),
+          }
+        : {}),
     };
     return {
       total: await this.prisma.movie.count({ where: query }),
@@ -65,12 +78,15 @@ export class MoviesService {
         where: query,
         skip: input.skip,
         take: input.limit,
-      })
-    }
-
-
+      }),
+    };
   }
-  constructor(private upload: UploadService, private prisma: PrismaService, private genres: GenresService, private artists: ArtistsService) { }
+  constructor(
+    private upload: UploadService,
+    private prisma: PrismaService,
+    private genres: GenresService,
+    private artists: ArtistsService,
+  ) {}
   async update(input: UpdateMovieInput) {
     await this.validateInput(input);
     return await this.prisma.movie.update({
@@ -81,42 +97,50 @@ export class MoviesService {
         backdrop: input.backdrop,
         name: input.name,
         poster: input.poster,
-        ...input.artists ? {
-          artists: {
-            deleteMany: {},
-            createMany: {
-              skipDuplicates: true,
-              data: input.artists
+        ...(input.artists
+          ? {
+              artists: {
+                deleteMany: {},
+                createMany: {
+                  skipDuplicates: true,
+                  data: input.artists,
+                },
+              },
             }
-          }
-        } : {},
+          : {}),
         description: input.description,
-        ...input.downloadableAssets ? {
-          downloadableAssets: {
-            deleteMany: {},
-            createMany: {
-              data: input.downloadableAssets
+        ...(input.downloadableAssets
+          ? {
+              downloadableAssets: {
+                deleteMany: {},
+                createMany: {
+                  data: input.downloadableAssets,
+                },
+              },
             }
-          }
-        } : {},
+          : {}),
         duration: input.duration,
         gallery: input.gallery,
-        ...input.genreIds ? { genres: { connect: input.genreIds.map(g => ({ id: g })) } } : {},
+        ...(input.genreIds
+          ? { genres: { connect: input.genreIds.map((g) => ({ id: g })) } }
+          : {}),
         imdbRef: input.imdbRef,
         imdbScore: input.imdbScore,
-        ...input.languages ? {
-          languages: {
-            deleteMany: {},
-            createMany: {
-              data: input.languages,
+        ...(input.languages
+          ? {
+              languages: {
+                deleteMany: {},
+                createMany: {
+                  data: input.languages,
+                },
+              },
             }
-          }
-        } : {},
+          : {}),
         plot: input.plot,
-        releaseDate: input.releaseDate
+        releaseDate: input.releaseDate,
       },
-      include: dbInclude
-    })
+      include: dbInclude,
+    });
   }
 
   async create(input: CreateMovieInput) {
@@ -128,30 +152,30 @@ export class MoviesService {
         poster: input.poster,
         artists: {
           createMany: {
-            data: input.artists
-          }
+            data: input.artists,
+          },
         },
         description: input.description,
         downloadableAssets: {
           createMany: {
-            data: input.downloadableAssets
-          }
+            data: input.downloadableAssets,
+          },
         },
         duration: input.duration,
         gallery: input.gallery,
-        genres: { connect: input.genreIds.map(g => ({ id: g })) },
+        genres: { connect: input.genreIds.map((g) => ({ id: g })) },
         imdbRef: input.imdbRef,
         imdbScore: input.imdbScore,
         languages: {
           createMany: {
             data: input.languages,
-          }
+          },
         },
         plot: input.plot,
-        releaseDate: input.releaseDate
+        releaseDate: input.releaseDate,
       },
-      include: dbInclude
-    })
+      include: dbInclude,
+    });
   }
 
   private async validateInput(input: Partial<CreateMovieInput>) {
@@ -162,7 +186,7 @@ export class MoviesService {
       await this.upload.checkWithBucketOrFail(input.poster, 'poster');
     }
     for (const galleryImage of input.gallery || []) {
-      await this.upload.checkWithBucketOrFail(galleryImage, "gallery");
+      await this.upload.checkWithBucketOrFail(galleryImage, 'gallery');
     }
     for (const genreId of input.genreIds || []) {
       await this.genres.getByIdOrFail(genreId);

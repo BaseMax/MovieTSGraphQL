@@ -22,10 +22,15 @@ import { APP_GUARD } from '@nestjs/core';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, AuthResolver, AuthGuard, {
-    provide: APP_GUARD,
-    useClass: AuthGuard
-  }],
+  providers: [
+    AuthService,
+    AuthResolver,
+    AuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
   exports: [
     UsersModule,
     AuthGuard,
@@ -39,4 +44,4 @@ import { APP_GUARD } from '@nestjs/core';
     }),
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

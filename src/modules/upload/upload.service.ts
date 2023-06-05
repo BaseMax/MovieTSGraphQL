@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectS3, S3 } from 'nestjs-s3';
 import { NotFound } from '@aws-sdk/client-s3';
 import * as sharp from 'sharp';
@@ -18,27 +22,46 @@ interface SizedUploadInput extends UploadInput {
 
 @Injectable()
 export class UploadService {
-
-  constructor(@InjectS3() private readonly s3: S3) { }
+  constructor(@InjectS3() private readonly s3: S3) {}
   async uploadAvatar(input: UploadInput) {
-    return await this.uploadImageSized({ ...input, ...sizes.avatar, bucket: "avatars" });
+    return await this.uploadImageSized({
+      ...input,
+      ...sizes.avatar,
+      bucket: 'avatars',
+    });
   }
 
   async uploadGalleryImage(input: UploadInput) {
-    return await this.uploadImageSized({ ...input, ...sizes.gallery, bucket: "gallery" });
+    return await this.uploadImageSized({
+      ...input,
+      ...sizes.gallery,
+      bucket: 'gallery',
+    });
   }
 
   async uploadPoster(input: UploadInput) {
-    return await this.uploadImageSized({ ...input, ...sizes.poster, bucket: "poster" });
+    return await this.uploadImageSized({
+      ...input,
+      ...sizes.poster,
+      bucket: 'poster',
+    });
   }
 
   async uploadBackdrop(input: UploadInput) {
-    return await this.uploadImageSized({ ...input, ...sizes.poster, bucket: "backdrop" });
+    return await this.uploadImageSized({
+      ...input,
+      ...sizes.poster,
+      bucket: 'backdrop',
+    });
   }
 
-
-
-  private async uploadImageSized({ image, width, height, name, bucket }: SizedUploadInput) {
+  private async uploadImageSized({
+    image,
+    width,
+    height,
+    name,
+    bucket,
+  }: SizedUploadInput) {
     const resized = await this.resizeAndFormat(image, width, height);
 
     const key = this.getKey(name);
@@ -46,7 +69,7 @@ export class UploadService {
     await this.s3.putObject({
       Bucket: bucket,
       Key: key,
-      Body: resized
+      Body: resized,
     });
 
     return `/${bucket}/${key}`;
@@ -55,7 +78,7 @@ export class UploadService {
     const { bucket, exists } = await this.check(path);
 
     if (!exists || bucket !== expectedBucket) {
-      throw new NotFoundException(`invalid path :${path}`)
+      throw new NotFoundException(`invalid path :${path}`);
     }
   }
   public async check(path: string) {
@@ -70,16 +93,14 @@ export class UploadService {
       console.log(bucket, name);
       await this.s3.headObject({
         Bucket: bucket,
-        Key: name
+        Key: name,
       });
     } catch (e) {
-      console.log(e)
-      if (e instanceof NotFound)
-        exists = false;
-      else
-        throw e;
+      console.log(e);
+      if (e instanceof NotFound) exists = false;
+      else throw e;
     }
-    return { bucket, exists }
+    return { bucket, exists };
   }
 
   private getKey(name: string) {
@@ -90,7 +111,7 @@ export class UploadService {
     try {
       return await sharp(image).resize(width, height).jpeg().toBuffer();
     } catch {
-      throw new BadRequestException("invalid image");
+      throw new BadRequestException('invalid image');
     }
   }
 }

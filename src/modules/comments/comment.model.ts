@@ -1,6 +1,6 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { Movie } from "../movies/movie.model";
-import { User } from "../users/user.model";
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Movie } from '../movies/movie.model';
+import { User } from '../users/user.model';
 
 @ObjectType()
 export class Comment {
@@ -21,6 +21,6 @@ export class Comment {
   userId: string;
 
   @Field(() => Movie)
-  movie: Movie
+  movie: Movie;
   movieId: string;
-} 
+}

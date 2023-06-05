@@ -1,4 +1,11 @@
-import { ObjectType, Field, ID, Float, Int, registerEnumType } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  ID,
+  Float,
+  Int,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { Artist } from '../artists/artist.model';
 import { Comment } from '../comments/comment.model';
 import { Genre } from '../genres/genre.model';
@@ -48,7 +55,7 @@ export class Movie {
   languages: MovieLanguage[];
 
   @Field(() => [Comment])
-  comments: Comment[]
+  comments: Comment[];
 }
 
 @ObjectType()
@@ -81,24 +88,22 @@ export class MovieLanguage {
   for: LanguageRelation;
 }
 
-
-
 export enum LanguageRelation {
-  original = "original",
-  dub = "dub",
-  subtitle = "subtitle"
+  original = 'original',
+  dub = 'dub',
+  subtitle = 'subtitle',
 }
 
 export enum AssetType {
-  subtitle = "subtitle",
-  sound = "sound",
-  video = "video"
+  subtitle = 'subtitle',
+  sound = 'sound',
+  video = 'video',
 }
 
 export enum Contribution {
-  actor = "actor",
-  director = "director",
-  writer = "writer",
+  actor = 'actor',
+  director = 'director',
+  writer = 'writer',
 }
 
 registerEnumType(LanguageRelation, { name: 'LanguageRelation' });

@@ -9,8 +9,14 @@ import { MovieArtistResolver } from './movie-artist/movie-artist.resolver';
 import { CommentsModule } from '../comments/comments.module';
 
 @Module({
-  imports: [UploadModule, PrismaModule, GenresModule, ArtistsModule, forwardRef(() => CommentsModule)],
+  imports: [
+    UploadModule,
+    PrismaModule,
+    GenresModule,
+    ArtistsModule,
+    forwardRef(() => CommentsModule),
+  ],
   providers: [MoviesService, MoviesResolver, MovieArtistResolver],
-  exports: [MoviesService]
+  exports: [MoviesService],
 })
-export class MoviesModule { }
+export class MoviesModule {}

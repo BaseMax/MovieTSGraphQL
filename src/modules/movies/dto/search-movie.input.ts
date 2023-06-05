@@ -1,5 +1,5 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { Pagination } from "src/utils/pagination.input";
+import { Field, InputType } from '@nestjs/graphql';
+import { Pagination } from 'src/utils/pagination.input';
 
 @InputType()
 export class SearchMovieInput extends Pagination {
@@ -7,7 +7,7 @@ export class SearchMovieInput extends Pagination {
   text?: string;
 
   @Field(() => [String], { nullable: true })
-  genreIds?: string[]
+  genreIds?: string[];
 
   @Field({ nullable: true })
   startDate?: Date;

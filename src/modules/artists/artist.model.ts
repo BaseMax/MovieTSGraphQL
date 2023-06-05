@@ -19,5 +19,5 @@ export class Artist {
   avatar?: string;
 
   @Field(() => [Movie])
-  movies: Movie[]
+  movies: Movie[];
 }

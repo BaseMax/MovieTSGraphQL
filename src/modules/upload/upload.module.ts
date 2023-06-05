@@ -9,18 +9,19 @@ import { ConfigService } from '@nestjs/config';
       useFactory: (c: ConfigService) => ({
         config: {
           credentials: {
-            accessKeyId: c.getOrThrow("S3_ACCESS_KEY"),
-            secretAccessKey: c.getOrThrow("S3_SECRET_KEY"),
+            accessKeyId: c.getOrThrow('S3_ACCESS_KEY'),
+            secretAccessKey: c.getOrThrow('S3_SECRET_KEY'),
           },
-          endpoint: c.getOrThrow("S3_URI"),
+          endpoint: c.getOrThrow('S3_URI'),
           forcePathStyle: true,
-          region: "eu-west-1"
+          region: 'eu-west-1',
         },
       }),
-      inject: [ConfigService]
-    }),],
+      inject: [ConfigService],
+    }),
+  ],
   providers: [UploadService],
   exports: [UploadService],
-  controllers: [UploadController]
+  controllers: [UploadController],
 })
-export class UploadModule { }
+export class UploadModule {}

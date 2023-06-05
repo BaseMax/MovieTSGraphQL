@@ -6,6 +6,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 @Module({
   providers: [GenresService, GenresResolver],
   imports: [PrismaModule],
-  exports: [GenresService]
+  exports: [GenresService],
 })
-export class GenresModule { }
+export class GenresModule {}

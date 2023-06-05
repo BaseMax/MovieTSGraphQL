@@ -1,4 +1,11 @@
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { CursorBasedPagination } from 'src/utils/cursor-pagination';
 import { AuthenticatedDec } from '../auth/authenticated-user.decorator';
 import { UserAuthPayload } from '../auth/dto/user.data';
@@ -14,23 +21,36 @@ import { UpdateCommentInput } from './dto/update-comment.input';
 
 @Resolver(() => Comment)
 export class CommentsResolver {
-  constructor(private service: CommentsService, private movies: MoviesService, private users: UsersService) { }
+  constructor(
+    private service: CommentsService,
+    private movies: MoviesService,
+    private users: UsersService,
+  ) {}
 
   @Mutation(() => Comment)
   @Private()
-  createComment(@AuthenticatedDec() user: UserAuthPayload, @Args("input") input: CreateCommentInput) {
-    return this.service.create(user, input)
+  createComment(
+    @AuthenticatedDec() user: UserAuthPayload,
+    @Args('input') input: CreateCommentInput,
+  ) {
+    return this.service.create(user, input);
   }
 
   @Mutation(() => Comment)
   @Private()
-  updateComment(@AuthenticatedDec() user: UserAuthPayload, @Args("input") input: UpdateCommentInput) {
-    return this.service.update(user, input)
+  updateComment(
+    @AuthenticatedDec() user: UserAuthPayload,
+    @Args('input') input: UpdateCommentInput,
+  ) {
+    return this.service.update(user, input);
   }
 
   @Mutation(() => Boolean)
   @Private()
-  async deleteComment(@AuthenticatedDec() user: UserAuthPayload, @Args("id") id: string) {
+  async deleteComment(
+    @AuthenticatedDec() user: UserAuthPayload,
+    @Args('id') id: string,
+  ) {
     await this.service.delete(user, id);
     return true;
   }
@@ -38,14 +58,14 @@ export class CommentsResolver {
   @Mutation(() => Comment)
   @Private()
   @MinRole(Role.admin)
-  approveComment(@Args("id") id: string) {
+  approveComment(@Args('id') id: string) {
     return this.service.approve(id);
   }
 
   @Query(() => [Comment])
   @Private()
   @MinRole(Role.admin)
-  unapprovedComments(@Args("pagination") pagination: CursorBasedPagination) {
+  unapprovedComments(@Args('pagination') pagination: CursorBasedPagination) {
     return this.service.unapproved(pagination);
   }
   @ResolveField()
@@ -57,6 +77,4 @@ export class CommentsResolver {
   user(@Parent() comment: Comment) {
     return this.users.getUserByIdOrFail(comment.userId);
   }
-
-
 }

@@ -15,7 +15,7 @@ export class AuthResolver {
   constructor(
     private service: AuthService,
     private usersService: UsersService,
-  ) { }
+  ) {}
 
   @Mutation(() => AuthPayload)
   async register(
@@ -48,7 +48,10 @@ export class AuthResolver {
   @Private()
   @MinRole(Role.superadmin)
   @Mutation(() => User)
-  async changeRole(@Args("userId") userId: string, @Args("role", { type: () => Role }) role: Role) {
-    return this.usersService.changeRole(userId, role)
+  async changeRole(
+    @Args('userId') userId: string,
+    @Args('role', { type: () => Role }) role: Role,
+  ) {
+    return this.usersService.changeRole(userId, role);
   }
 }

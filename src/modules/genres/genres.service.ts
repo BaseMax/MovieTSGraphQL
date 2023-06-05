@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGenreInput } from './dto/create-genre.input';
@@ -8,21 +12,22 @@ import { UpdateGenreInput } from './dto/update-genre.input';
 export class GenresService {
   async countMovies(id: string) {
     const data = await this.prisma.genre.findUniqueOrThrow({
-      where: { id }, include: {
+      where: { id },
+      include: {
         _count: {
           select: {
-            movies: true
-          }
-        }
-      }
-    })
+            movies: true,
+          },
+        },
+      },
+    });
     return data._count.movies;
   }
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   public async getById(id: string) {
     return this.prisma.genre.findUnique({
-      where: { id }
+      where: { id },
     });
   }
   public async getByIdOrFail(id: string) {
@@ -40,29 +45,29 @@ export class GenresService {
           id: input.id,
         },
         data: {
-          name: input.name
-        }
+          name: input.name,
+        },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new BadRequestException("name conflicting");
+          throw new BadRequestException('name conflicting');
         }
       }
-      throw e
+      throw e;
     }
   }
   public async create(input: CreateGenreInput) {
     if (await this.prisma.genre.findUnique({ where: { name: input.name } })) {
-      throw new BadRequestException("genre already exists");
+      throw new BadRequestException('genre already exists');
     }
     return this.prisma.genre.create({
       data: {
         name: input.name,
-      }
-    })
+      },
+    });
   }
   public getAll() {
-    return this.prisma.genre.findMany()
+    return this.prisma.genre.findMany();
   }
 }

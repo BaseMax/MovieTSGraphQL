@@ -11,54 +11,58 @@ export class ArtistsService {
   async getMovies(id: string) {
     const movies = await this.prisma.artist.findUniqueOrThrow({
       where: {
-        id
+        id,
       },
       include: {
         movies: {
           include: {
             movie: {
-              include: movieInclude
-            }
-          }
-        }
-      }
+              include: movieInclude,
+            },
+          },
+        },
+      },
     });
-    return movies.movies.map(m => m.movie);
+    return movies.movies.map((m) => m.movie);
   }
   async search(input: SearchArtistInput) {
-    const query = input.text ? {
-      OR: [{
-        name: { search: input.text },
-      }, {
-        bio: { search: input.text }
-      }],
-    } : {};
+    const query = input.text
+      ? {
+          OR: [
+            {
+              name: { search: input.text },
+            },
+            {
+              bio: { search: input.text },
+            },
+          ],
+        }
+      : {};
     return {
       total: await this.prisma.artist.count({
-        where: query
+        where: query,
       }),
       artists: await this.prisma.artist.findMany({
         where: query,
         skip: input.skip,
-        take: input.limit
-      })
-    }
+        take: input.limit,
+      }),
+    };
   }
   async delete(id: string) {
     await this.getByIdOrFail(id);
     await this.prisma.artist.delete({
-      where: { id }
+      where: { id },
     });
     return true;
-
   }
 
-  constructor(private prisma: PrismaService, private upload: UploadService) { }
+  constructor(private prisma: PrismaService, private upload: UploadService) {}
 
   async getById(id: string) {
     return await this.prisma.artist.findUnique({
-      where: { id }
-    })
+      where: { id },
+    });
   }
 
   async getByIdOrFail(id: string) {
@@ -80,9 +84,9 @@ export class ArtistsService {
         avatar: input.avatar,
         bio: input.bio,
         dateOfBirth: input.dateOfBirth,
-        name: input.name
-      }
-    })
+        name: input.name,
+      },
+    });
   }
 
   async create(input: CreateArtistInput) {
@@ -95,8 +99,7 @@ export class ArtistsService {
         name: input.name,
         bio: input.bio,
         dateOfBirth: input.dateOfBirth,
-      }
-    })
+      },
+    });
   }
-
 }
