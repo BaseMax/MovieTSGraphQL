@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Movie } from '../movies/movie.model';
 
 @ObjectType()
 export class Artist {
@@ -16,4 +17,7 @@ export class Artist {
 
   @Field({ nullable: true })
   avatar?: string;
+
+  @Field(() => [Movie])
+  movies: Movie[]
 }

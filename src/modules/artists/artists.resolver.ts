@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { AuthGuard } from '../auth/auth.guard';
 import { MinRole } from '../auth/min-role.decorator';
 import { Role } from '../users/user.model';
@@ -10,7 +10,7 @@ import { PaginatedArtist as PaginatedArtists } from './dto/paginated-artist.mode
 import { SearchArtistInput } from './dto/search-artist.input';
 import { UpdateArtistInput } from './dto/update-artist.input';
 
-@Resolver()
+@Resolver(() => Artist)
 export class ArtistsResolver {
 
   constructor(private service: ArtistsService) { }
@@ -44,6 +44,11 @@ export class ArtistsResolver {
   @Query(() => PaginatedArtists)
   searchArtists(@Args("input") input: SearchArtistInput) {
     return this.service.search(input);
+  }
+
+  @ResolveField()
+  movies(@Parent() artist: Artist) {
+    return this.service.getMovies(artist.id)
   }
 
 }

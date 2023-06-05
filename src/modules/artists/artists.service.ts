@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { movieInclude } from '../movies/movieInclude';
 import { UploadService } from '../upload/upload.service';
 import { CreateArtistInput } from './dto/create-artist.input';
 import { SearchArtistInput } from './dto/search-artist.input';
@@ -7,6 +8,23 @@ import { UpdateArtistInput } from './dto/update-artist.input';
 
 @Injectable()
 export class ArtistsService {
+  async getMovies(id: string) {
+    const movies = await this.prisma.artist.findUniqueOrThrow({
+      where: {
+        id
+      },
+      include: {
+        movies: {
+          include: {
+            movie: {
+              include: movieInclude
+            }
+          }
+        }
+      }
+    });
+    return movies.movies.map(m => m.movie);
+  }
   async search(input: SearchArtistInput) {
     const query = input.text ? {
       OR: [{
