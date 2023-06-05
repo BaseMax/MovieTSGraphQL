@@ -1,176 +1,276 @@
-# Movie Project with GraphQL, TypeScript, and Prisma ORM
+# MovieTSGraphQL
 
-This is a movie project that aims to create a GraphQL web service with various features similar to Netflix. It is built using GraphQL, TypeScript, and Prisma ORM. The project provides functionality to manage movies, categories, actors, directors, comments, and more.
+MovieTSGraphQL is a GraphQL web service built using NestJS, Prisma ORM, PostgreSQL, and Minio. The project provides functionality to manage movies, categories, actors, directors, comments, and more. It aims to create a web service with various features similar to Netflix.
+
+## Demo
 
 ## Features
-- Add a new movie
-- Add a new genre
-- Add an actor
-- List all actors
-- Search actors
-- Get a list of all movies with pagination
-- Get a list of all movies in one or multiple genres (e.g., comedy and war)
-- Edit a movie
-- Delete a movie
-- Delete an actor
-- Get details of a movie
-- Get comments of a movie
-- Confirm a comment
-- Delete a comment
-- Edit a comment
 
-## Technologies Used
+- Manage movies, categories, actors, directors, comments, and more.
+- Secure authentication and authorization system.
+- GraphQL API for easy integration with any frontend framework.
+- Optimized for high performance and scalability.
 
-The project utilizes the following technologies:
+## Authentication 
+Authentication is done through an Authorization Header using a Bearer token. The token can be obtained by calling the login and register mutations.
 
-- GraphQL: A query language and runtime for APIs
-- TypeScript: A statically typed superset of JavaScript
-- Prisma ORM: An open-source database toolkit
+Once the token is obtained, it needs to be included in the Authorization Header of all subsequent GraphQL requests. The app validates the token and restricts access to certain mutations and queries based on the token's permissions.
 
-## Getting Started
+Some mutations and queries require higher privileges, such as a specific role, to be executed. These operations can only be performed by users with the required privileges.
 
-To get started with the movie project, follow these steps:
-
-Clone the repository:
-
-```bash
-git clone https://github.com/BaseMax/MovieTSGraphQL.git
+example Header : 
+```
+Authorization: Bearer <token>
 ```
 
-Install the dependencies:
+## File upload
+
+This app supports file upload through a dedicated endpoint at `/upload/<type>/<name-prefix>`. The uploaded file will be resized to a specific size based on the chosen type. Currently, the supported types and sizes are:
+
+- `avatar`: { width: 512, height: 512 }
+- `gallery`: { width: 1920, height: 1080 }
+- `backdrop`: { width: 1920, height: 1080 }
+- `poster`: { width: 600, height: 900 }
+
+To upload a file, you should make a POST request to the `/upload/<type>/<name-prefix>` endpoint with the file contents as the request body. The request body should be a binary file, not multipart form data.
+
+The `<type>` parameter specifies the type of the uploaded file, while the `<name-prefix>` parameter is used to generate a unique filename for the uploaded file. The uploaded file will be resized and saved to the server, and the response will contain a JSON object with the URL of the uploaded file. For example:
+
+```
+{"url":"/poster/testtt-cliiy9tkb000015ln9byqftw4.jpeg"}
+```
+
+You can use the returned URL wherever a file is required in your application.
+
+## Stack
+
+- NestJS
+- Prisma ORM
+- PostgreSQL
+- Minio
+
+## Usage
+
+To use this project, follow these steps:
+
+1. Clone this repository:
 
 ```bash
-cd movie-project
+git clone https://github.com/BaseMax/MovieTSGraphQL
+```
+
+2. Install dependencies:
+
+```bash
 npm install
 ```
 
-Set up the database connection in the .env file. You can use a PostgreSQL, MySQL, or SQLite database. Make sure to provide the necessary database connection details.
-
-Migrate the database:
+3. Run the app using Docker Compose:
 
 ```bash
-npx prisma migrate dev --name initial-migration
+sudo docker-compose -f docker-compose.dev.yml up
 ```
 
-Generate Prisma Client:
+This will start the app in development mode, with hot-reloading enabled. The GraphQL playground will be available at http://localhost:3000/graphql.
+
+4. Attach to the container:
 
 ```bash
-npx prisma generate
+sudo docker exec -it movietsgraphql-app-1 bash
 ```
 
-Start the development server:
+5. Create an admin account:
 
 ```bash
-npm run dev
+dsconfig
+
+npx nest start --entryFile create-admin.js
 ```
 
-Access the GraphQL playground:
+It will prompt you for an email, password, and name to create the superuser account.
 
-Open your browser and navigate to http://localhost:4000 to explore the GraphQL API and perform queries and mutations.
+## Examples
 
-## Folder Structure
+Here are some example GraphQL queries and mutations that can be used with this project:
 
-The project has the following folder structure:
-
-```bash
-├── src
-│   ├── generated         # Prisma Client generated code
-│   ├── resolvers         # GraphQL resolvers
-│   ├── schema            # GraphQL schema
-│   ├── utils             # Utility functions
-│   └── index.ts          # Entry point
-├── .env                  # Environment variables
-├── .gitignore            # Git ignore file
-├── package.json          # NPM package configuration
-└── README.md             # Project documentation
-```
-
-Feel free to explore the code in the respective folders to understand how the project is implemented.
-
-## Structure
-
-Here's an example schema of the structures that can be used in the movie project:
+1. Get all genres:
 
 ```graphql
-type Movie {
-  id: ID!
-  title: String!
-  description: String!
-  releaseYear: Int!
-  genres: [Genre!]!
-  actors: [Actor!]!
-  directors: [Director!]!
-  comments: [Comment!]!
-}
-
-type Genre {
-  id: ID!
-  name: String!
-  movies: [Movie!]!
-}
-
-type Actor {
-  id: ID!
-  name: String!
-  movies: [Movie!]!
-}
-
-type Director {
-  id: ID!
-  name: String!
-  movies: [Movie!]!
-}
-
-type Comment {
-  id: ID!
-  text: String!
-  movie: Movie!
-  confirmed: Boolean!
-}
-
-type Query {
-  movie(id: ID!): Movie
-  movies(page: Int!, limit: Int!): [Movie!]!
-  moviesByGenres(genres: [String!]!): [Movie!]!
-  actors: [Actor!]!
-  directors: [Director!]!
-  searchActors(name: String!): [Actor!]!
-}
-
-type Mutation {
-  addMovie(title: String!, description: String!, releaseYear: Int!, genres: [String!]!, actors: [ID!]!, directors: [ID!]!): Movie!
-  addCategory(name: String!): Genre!
-  addActor(name: String!): Actor!
-  addDirector(name: String!): Director!
-  editMovie(id: ID!, title: String, description: String, releaseYear: Int, genres: [String], actors: [ID], directors: [ID]): Movie!
-  deleteMovie(id: ID!): Movie
-  deleteActor(id: ID!): Actor
-  deleteDirector(id: ID!): Director
-  confirmComment(id: ID!): Comment
-  deleteComment(id: ID!): Comment
-  editComment(id: ID!, text: String!): Comment
-  // MORE...
-}
-
-schema {
-  query: Query
-  mutation: Mutation
+query {
+  genres {
+    id
+    name
+  }
 }
 ```
 
-This schema defines the structure and relationships between different entities, such as movies, genres, actors, directors, and comments. It also includes query and mutation definitions to perform various operations on these entities.
+2. Get a specific genre:
 
-## Contributing
+```graphql
+query {
+  genre(id: "1") {
+    id
+    name
+  }
+}
+```
 
-Contributions are welcome! If you find any issues or have suggestions to improve the project, please open an issue or submit a pull request.
+3. Search for artists:
+
+```graphql
+query {
+  searchArtists(input: {text: "Tom"}) {
+    total
+    artists {
+      id
+      name
+    }
+  }
+}
+```
+
+4. Get a specific movie:
+
+```graphql
+query {
+  movie(id: "1") {
+    id
+    name
+    plot
+    description
+    imdbScore
+    imdbRef
+    duration
+    releaseDate
+    backdrop
+    poster
+    gallery
+    genres {
+      id
+      name
+    }
+    artists {
+      artist {
+        id
+        name
+      }
+      contribution
+    }
+    downloadableAssets {
+      title
+      link
+      type
+    }
+    languages {
+      tag
+      for
+    }
+  }
+}
+```
+
+5. Create a new movie:
+
+```graphql
+mutation {
+  createMovie(input: {
+    name: "Movie Name"
+    plot: "Movie Plot"
+    description: "Movie Description"
+    imdbScore: 8.5
+    imdbRef: "https://www.imdb.com/title/tt1375666/"
+    duration: 120
+    releaseDate: "2022-01-01T00:00:00Z"
+    backdrop: "/backdrop/backdrop.jpeg"
+    poster: "/poster/poster.jpeg"
+    gallery: ["/gallery/gallery1.jpeg", "/gallery/gallery2.jpeg"]
+    genreIds: ["1", "2"]
+    artists: [{
+      artistId: "1"
+      contribution: director
+    }]
+    downloadableAssets: [{
+      title: "Subtitle"
+      link: "/subtitle/subtitle.vtt"
+      type: subtitle
+    }]
+    languages: [{
+      tag: "en-US"
+      for: original
+    }]
+  }) {
+    id
+    name
+  }
+}
+```
+
+6. Update a movie:
+
+```graphql
+mutation {
+  updateMovie(input: {
+    id: "1"
+    name: "New Movie Name"
+    plot: "New Movie Plot"
+    description: "New Movie Description"
+    imdbScore: 9.0
+    imdbRef: "https://www.imdb.com/title/tt1375667/"
+    duration: 150
+    releaseDate: "2022-02-02T00:00:00Z"
+    backdrop: "/backdrop/newbackdrop.jpeg"
+    poster: "/poster/newposter.jpeg"
+    gallery: ["/gallery/newgallery1.jpeg", "/gallery/newgallery2.jpeg"]
+    genreIds: ["2", "3"]
+    artists: [{
+      artistId: "2"
+      contribution: actor
+    }]
+    downloadableAssets: [{
+      title: "Sound"
+      link: "/sound/sound.mp3"
+      type: sound
+    }]
+    languages: [{
+      tag: "fr-FR"
+      for: dub
+    }]
+  }) {
+    id
+    name
+  }
+}
+```
+
+## API Documentation
+
+Here is a table describing all mutations and queries available in this project:
+
+| Query/Mutation | Description |
+| --- |--- |
+| `movie(id: ID!)` | Get a specific movie by ID. |
+| `searchMovies(input: SearchMoviesInput!)` | Search for movies based on a search input. |
+| `createMovie(input: CreateMovieInput!)` | Create a new movie. |
+| `updateMovie(input: UpdateMovieInput!)` | Update an existing movie. |
+| `deleteMovie(id: ID!)` | Delete a movie by ID. |
+| `genres` | Get all genres. |
+| `genre(id: ID!)` | Get a specific genre by ID. |
+| `createGenre(input: CreateGenreInput!)` | Create a new genre. |
+| `updateGenre(input: UpdateGenreInput!)` | Update an existing genre. |
+| `artist(id: ID!)` | Get a specific artist by ID. |
+| `searchArtists(input: SearchArtistsInput!)` | Search for artists based on a search input. |
+| `createArtist(input: CreateArtistInput!)` | Create a new artist. |
+| `updateArtist(input: UpdateArtistInput!)` | Update an existing artist. |
+| `deleteArtist(id: ID!)` | Delete an artist by ID. |
+| `createComment(input: CreateCommentInput!)` | Create a new comment. |
+| `updateComment(input: UpdateCommentInput!)` | Update an existing comment. |
+| `deleteComment(id: ID!)` | Delete a comment by ID. |
+| `createUser(input: CreateUserInput!)` | Create a new user. |
+| `user` | Get authentication details for a user. |
 
 ## License
 
-The movie project is open-source and distributed under the GPL-3.0 License. You can use, modify, and distribute the code for both personal and commercial purposes.
+This project is licensed under the GPL-3 license. Contributions are welcome! Please submit any issues or pull requests to the GitHub repository.
 
-# Authors
 
-- ...
-- Max Base
 
-Copyright 2023, Max Base
