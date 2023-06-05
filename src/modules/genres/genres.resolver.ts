@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { AuthGuard } from '../auth/auth.guard';
 import { MinRole } from '../auth/min-role.decorator';
 import { Role } from '../users/user.model';
@@ -8,7 +8,7 @@ import { UpdateGenreInput } from './dto/update-genre.input';
 import { Genre } from './genre.model';
 import { GenresService } from './genres.service';
 
-@Resolver()
+@Resolver(() => Genre)
 export class GenresResolver {
   constructor(private service: GenresService) { }
   @Query(() => [Genre])
@@ -33,6 +33,11 @@ export class GenresResolver {
   @MinRole(Role.admin)
   public updateGenre(@Args("input") input: UpdateGenreInput) {
     return this.service.update(input);
+  }
+
+  @ResolveField()
+  movieCount(@Parent() genre: Genre) {
+    return this.service.countMovies(genre.id)
   }
 
 }

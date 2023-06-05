@@ -22,6 +22,7 @@ type AuthPayload {
 type Genre {
   id: ID!
   name: String!
+  movieCount: Float!
 }
 
 type Artist {

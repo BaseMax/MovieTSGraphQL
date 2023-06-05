@@ -6,6 +6,18 @@ import { UpdateGenreInput } from './dto/update-genre.input';
 
 @Injectable()
 export class GenresService {
+  async countMovies(id: string) {
+    const data = await this.prisma.genre.findUniqueOrThrow({
+      where: { id }, include: {
+        _count: {
+          select: {
+            movies: true
+          }
+        }
+      }
+    })
+    return data._count.movies;
+  }
   constructor(private prisma: PrismaService) { }
 
   public async getById(id: string) {

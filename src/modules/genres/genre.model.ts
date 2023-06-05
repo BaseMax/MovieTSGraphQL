@@ -8,4 +8,7 @@ export class Genre {
 
   @Field()
   name: string;
+
+  @Field()
+  movieCount: number;
 }
