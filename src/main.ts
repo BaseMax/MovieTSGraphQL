@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { raw } from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -8,7 +9,7 @@ async function bootstrap() {
     rawBody: true
   });
   app.useGlobalPipes(new ValidationPipe());
-  app.useBodyParser("raw")
+  app.use(raw({ limit: "3mb" }))
 
   await app.listen(3000);
 }

@@ -16,7 +16,7 @@ export class GenresService {
   public async getByIdOrFail(id: string) {
     const genre = await this.getById(id);
     if (!genre) {
-      throw new NotFoundException("genre not found");
+      throw new NotFoundException(`genre not found. id : '${id}'`);
     }
     return genre;
   }

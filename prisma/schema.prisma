@@ -54,7 +54,7 @@ model Movie {
 model MovieLanguage {
   tag     String
   for     LanguageRelation
-  Movie   Movie            @relation(fields: [movieId], references: [id])
+  Movie   Movie            @relation(fields: [movieId], references: [id], onDelete: Cascade)
   movieId String
 
   @@id([movieId, for, tag])
@@ -67,7 +67,7 @@ enum LanguageRelation {
 }
 
 model DownloadableAssets {
-  Movie   Movie     @relation(fields: [movieId], references: [id])
+  Movie   Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
   movieId String
   id      String    @id @default(cuid())
   link    String
@@ -87,7 +87,7 @@ model Comment {
   createdAt DateTime
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  movie     Movie    @relation(fields: [movieId], references: [id])
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
   movieId   String
 }
 
@@ -98,9 +98,9 @@ model Genre {
 }
 
 model MovieArtist {
-  movie        Movie        @relation(fields: [movieId], references: [id])
+  movie        Movie        @relation(fields: [movieId], references: [id], onDelete: Cascade)
   movieId      String
-  artist       Artist       @relation(fields: [artistId], references: [id])
+  artist       Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
   artistId     String
   contribution Contribution
 

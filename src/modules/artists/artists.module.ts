@@ -6,6 +6,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   imports: [UploadModule, PrismaModule],
-  providers: [ArtistsService, ArtistsResolver]
+  providers: [ArtistsService, ArtistsResolver],
+  exports: [ArtistsService]
 })
 export class ArtistsModule { }

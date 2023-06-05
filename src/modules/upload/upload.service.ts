@@ -33,7 +33,7 @@ export class UploadService {
   }
 
   async uploadBackdrop(input: UploadInput) {
-    return await this.uploadImageSized({ ...input, ...sizes.poster, bucket: "backdrops" });
+    return await this.uploadImageSized({ ...input, ...sizes.poster, bucket: "backdrop" });
   }
 
 
@@ -59,6 +59,9 @@ export class UploadService {
     }
   }
   public async check(path: string) {
+    if (!path.startsWith('/')) {
+      throw new BadRequestException("path must start with '/' ");
+    }
     const [_, bucket, ...rest] = path.split('/');
     const name = rest.join('/');
 

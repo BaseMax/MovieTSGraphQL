@@ -46,7 +46,7 @@ export class ArtistsService {
   async getByIdOrFail(id: string) {
     const artist = await this.getById(id);
     if (!artist) {
-      throw new NotFoundException("artist not found");
+      throw new NotFoundException(`artist not found. id: '${id}'`);
     }
     return artist;
   }
