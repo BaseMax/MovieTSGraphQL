@@ -44,10 +44,10 @@ You can use the returned URL wherever a file is required in your application.
 
 ## Stack
 
-- NestJS
-- Prisma ORM
-- PostgreSQL
-- Minio
+- NestJS: A Node.js framework for building efficient and scalable server-side applications. It provides a modular architecture that allows developers to easily organize their code and use a wide range of plugins.
+- Prisma ORM: A modern database toolkit that provides a type-safe and intuitive way to access databases. It supports multiple databases and provides features like migrations, schema generation, and query building.
+- PostgreSQL: A powerful open-source relational database management system that provides features like triggers, transactions, and foreign key constraints. It is widely used in enterprise applications.
+- Minio: A high-performance distributed object storage server that provides features like versioning, lifecycle management, and access control. It is compatible with Amazon S3 API and provides a scalable and cost-effective solution for storing and retrieving large amounts of data.
 
 ## Usage
 
