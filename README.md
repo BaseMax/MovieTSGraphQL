@@ -246,27 +246,31 @@ mutation {
 
 Here is a table describing all mutations and queries available in this project:
 
-| Query/Mutation | Description |
-| --- |--- |
-| `movie(id: ID!)` | Get a specific movie by ID. |
-| `searchMovies(input: SearchMoviesInput!)` | Search for movies based on a search input. |
-| `createMovie(input: CreateMovieInput!)` | Create a new movie. |
-| `updateMovie(input: UpdateMovieInput!)` | Update an existing movie. |
-| `deleteMovie(id: ID!)` | Delete a movie by ID. |
-| `genres` | Get all genres. |
-| `genre(id: ID!)` | Get a specific genre by ID. |
-| `createGenre(input: CreateGenreInput!)` | Create a new genre. |
-| `updateGenre(input: UpdateGenreInput!)` | Update an existing genre. |
-| `artist(id: ID!)` | Get a specific artist by ID. |
-| `searchArtists(input: SearchArtistsInput!)` | Search for artists based on a search input. |
-| `createArtist(input: CreateArtistInput!)` | Create a new artist. |
-| `updateArtist(input: UpdateArtistInput!)` | Update an existing artist. |
-| `deleteArtist(id: ID!)` | Delete an artist by ID. |
-| `createComment(input: CreateCommentInput!)` | Create a new comment. |
-| `updateComment(input: UpdateCommentInput!)` | Update an existing comment. |
-| `deleteComment(id: ID!)` | Delete a comment by ID. |
-| `createUser(input: CreateUserInput!)` | Create a new user. |
-| `user` | Get authentication details for a user. |
+| Type | Name | Arguments | Return Type | Description |
+| --- | --- | --- | --- | --- |
+| Query | user |  | User! | Returns the currently logged in user |
+| Query | genres |  | [Genre!]! | Returns a list of all genres |
+| Query | genre | id: String! | Genre | Returns the genre with the specified ID |
+| Query | artist | id: String! | Artist | Returns the artist with the specified ID |
+| Query | searchArtists | input: SearchArtistInput! | PaginatedArtist! | Returns a list of artists that match the search criteria |
+| Query | movie | id: String! | Movie | Returns the movie with the specified ID |
+| Query | searchMovie | input: SearchMovieInput! | PaginatedMovies! | Returns a list of movies that match the search criteria |
+| Query | unapprovedComments | pagination: CursorBasedPagination! | [Comment!]! | Returns a list of unapproved comments, with pagination |
+| Mutation | register | input: RegisterUserInput! | AuthPayload! | Registers a new user |
+| Mutation | login | input: LoginUserInput! | AuthPayload! | Logs in a user |
+| Mutation | changeRole | userId: String!, role: Role! | User! | Changes the role of a user |
+| Mutation | createGenre | input: CreateGenreInput! | Genre! | Creates a new genre |
+| Mutation | updateGenre | input: UpdateGenreInput! | Genre! | Updates an existing genre |
+| Mutation | deleteArtist | id: String! | Boolean! | Deletes an artist with the specified ID |
+| Mutation | createArtist | input: CreateArtistInput! | Artist! | Creates a new artist |
+| Mutation | updateArtist | input: UpdateArtistInput! | Artist! | Updates an existing artist |
+| Mutation | createMovie | input: CreateMovieInput! | Movie! | Creates a new movie |
+| Mutation | updateMovie | input: UpdateMovieInput! | Movie! | Updates an existing movie |
+| Mutation | deleteMovie | id: String! | Boolean! | Deletes a movie with the specified ID |
+| Mutation | createComment | input: CreateCommentInput! | Comment! | Creates a new comment |
+| Mutation | updateComment | input: UpdateCommentInput! | Comment! | Updates an existing comment |
+| Mutation | deleteComment | id: String! | Boolean! | Deletes a comment with the specified ID |
+| Mutation | approveComment | id: String! | Comment! | Approves a comment with the specified ID | 
 
 ## License
 
